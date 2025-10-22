@@ -1,0 +1,39 @@
+# Best Practices for Building AI Agents with Azure AI Services
+
+This guide covers best practices for:
+- Generating code for AI agent applications using Azure AI Foundry and any other Azure AI models
+- Building agents with Azure AI Foundry
+- Implementing chatbots, assistants, and multi-agent systems with Microsoft Agent Framework
+
+## Key Principles
+- Generate a plan before writing code
+  - Explain why you select the model
+  - Explain why you select the sdk
+- **Default Platform: If the user does not specify a programming language or platform, use .NET as the default**
+- **Recommended SDK**: Microsoft Agent Framework is the recommended SDK for building agent applications
+
+## Working with Azure MCP Tools
+**Use document.search frequently** - this tool can and should be called multiple times whenever you need information about:
+- Microsoft Agent Framework SDK patterns and implementation guidance
+- Azure AI Foundry capabilities, models, and features
+- Model recommendations and best practices
+- SDK usage examples and code patterns
+
+Call this tool as often as needed to ensure accurate and up-to-date information.
+
+## Guidelines
+1. Model Selection
+- **Always use document.search** with query "Foundry Models sold directly by Azure" to get the latest available models from Azure AI Foundry documentation
+- **Prioritize the latest model series**: Recommend models from the newest series first (e.g., GPT-4.1 series > GPT-4o series > GPT-4 series)
+- **Within a series, prioritize by capability**: For example, in GPT-4 series, consider: `gpt-4-chat` for conversational AI, `gpt-4` for general purpose, `gpt-4-mini` for cost efficiency, `gpt-4-nano` for lightweight tasks
+- **Check model availability**: Use the document search results to verify which models are available in the user's region and deployment type 
+2. SDK
+- Use **Microsoft Agent Framework** for agent app, with following highlights
+  - Flexible Agent Framework: build, orchestrate, and deploy AI agents and multi-agent systems
+  - Multi-Agent Orchestration: Group chat, sequential, concurrent, and handoff patterns
+  - Plugin Ecosystem: Extend with native functions, OpenAPI, Model Context Protocol (MCP), and more
+  - LLM Support: OpenAI, Azure OpenAI, Azure AI Foundry, and more
+  - Runtime Support: In-process and distributed agent execution
+  - Multimodal: Text, vision, and function calling
+  - Cross-Platform: .NET and Python implementations
+
