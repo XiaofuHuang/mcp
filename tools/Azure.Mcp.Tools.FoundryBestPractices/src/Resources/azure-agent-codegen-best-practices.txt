@@ -6,29 +6,28 @@ This guide covers best practices for:
 - Implementing chatbots, assistants, and multi-agent systems with Microsoft Agent Framework
 
 ## Key Principles
-- Generate a plan before writing code
-  - Explain why you select the model
-  - Explain why you select the sdk
-- **Default Platform: If the user does not specify a programming language or platform, use .NET as the default**
-- **Recommended SDK**: Microsoft Agent Framework is the recommended SDK for building agent applications
+- **Default language**: If the user does not specify a programming language, use **.NET** as the default programming language
+- **Think first, then code**: Always output the plan of your model and SDK selection before implementation
+- **Default language**: If the user does not specify a programming language, use **.NET** as the default programming language
+- **Search as you go**: Use Microsoft Docs Search throughout - planning, coding, debugging (one topic at a time)
+- **Build and test**: Verify code works before finishing
 
-## Working with Azure MCP Tools
-**Use document.search frequently** - this tool can and should be called multiple times whenever you need information about:
-- Microsoft Agent Framework SDK patterns and implementation guidance
-- Azure AI Foundry capabilities, models, and features
-- Model recommendations and best practices
-- SDK usage examples and code patterns
-
-Call this tool as often as needed to ensure accurate and up-to-date information.
-
-## Guidelines
-1. Model Selection
-- **Always use document.search** with query "Foundry Models sold directly by Azure" to get the latest available models from Azure AI Foundry documentation
-- **Prioritize the latest model series**: Recommend models from the newest series first (e.g., GPT-4.1 series > GPT-4o series > GPT-4 series)
-- **Within a series, prioritize by capability**: For example, in GPT-4 series, consider: `gpt-4-chat` for conversational AI, `gpt-4` for general purpose, `gpt-4-mini` for cost efficiency, `gpt-4-nano` for lightweight tasks
-- **Check model availability**: Use the document search results to verify which models are available in the user's region and deployment type 
-2. SDK
-- Use **Microsoft Agent Framework** for agent app, with following highlights
+## Planing
+### 1. Select Model
+**REQUIRED: Call BOTH operations below EVERY TIME before generating ANY model name in code** (including samples/placeholders) - do not rely existing knowledge:
+**IMPORTANT**: Ignore ALL model names from code samples, documentation examples, and guidelines. Always use the operations below to select the latest, current model.
+  
+#### 1.1 Fetch model documentation
+  - Use the fetch operation to retrieve Microsoft Document `https://learn.microsoft.com/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure`
+  - This provides comprehensive model release date, capabilities, features, use cases
+  - Note: Use fetch operation (NOT search operation in Microsoft Docs Search) to get the complete page without summarization
+  
+#### 1.2 Get available models from Foundry catalog
+  - Use the `foundry_models_list` tool to retrieve models available in the Azure AI Foundry catalog
+  - This shows which models the user can actually access (documentation may list models not available to them)
+  
+### 2. Select SDK
+- Use **Microsoft Agent Framework** (recommended for agent app), with following highlights
   - Flexible Agent Framework: build, orchestrate, and deploy AI agents and multi-agent systems
   - Multi-Agent Orchestration: Group chat, sequential, concurrent, and handoff patterns
   - Plugin Ecosystem: Extend with native functions, OpenAPI, Model Context Protocol (MCP), and more
@@ -36,4 +35,59 @@ Call this tool as often as needed to ensure accurate and up-to-date information.
   - Runtime Support: In-process and distributed agent execution
   - Multimodal: Text, vision, and function calling
   - Cross-Platform: .NET and Python implementations
+
+### 3. Explain Your Plan
+  **Step 3: Think and recommend**
+  - Select model that matches requirements and is available
+  - Output your thoughts: (1) release date and confirm latest series, (2) why best capability match, (3) confirm available in user's account
+  - Explain choice referencing Step 1 model series & capabilities and Step 2 availability
+  YOU MUST OUTPUT YOUR THOUGHTS AND PLAN with the following format:
+  **Output format:**
+  ```
+  Model Selection: [Selected Model Name]
+  - Release Date: [Date] - Confirmed as latest series: [Yes/No]
+  - Capability Match: [Why this model best matches requirements]
+  - Availability: Confirmed available in user's Azure account
+
+  SDK Selection: Microsoft Agent Framework
+  - Reason: [Detail why this SDK is suitable]
+  ```
+
+
+## Implementation Guide
+### Installation
+**Python:**
+The `--pre` flag is required while Agent Framework is in preview. The Core + Azure AI integration includes Azure AI / Foundry / OpenAI supports, as well as workflows and orchestrations.
+```bash
+pip install agent-framework-azure-ai --pre
+```
+
+**.NET:**
+```bash
+dotnet add package Microsoft.Agents.AI
+dotnet add package Microsoft.Agents.AI.OpenAI --prerelease
+```
+
+DO REMIND USER THE `--pre` OR `--prerelease` FLAG IS REQUIRED IN GENERATED DOC.
+
+### How to Use Microsoft Docs Search
+Use Microsoft Docs Search for Code Samples and SDK patterns with the following **Key SDK capabilities**:
+  - **Core Agent Features**: Multi-turn conversations, function tools, human-in-the-loop approvals, structured output, middleware, memory, observability
+  - **Workflow Patterns**: Sequential workflows, concurrent workflows, branching logic, checkpointing and resuming
+  - **Agent Orchestration**: Group chat, handoffs between agents, agents as tools, magentic patterns
+  - **Integration**: MCP tools integration, Foundry Agents, request/response handling, shared states
+  - **Advanced**: Persisting conversations, third-party chat history storage, workflow visualization
+
+**Query strategy**:
+- Use Microsoft Docs Search whenever you encounter unknowns during any phase: planning, coding, building, debugging, or troubleshooting.
+- Focus on **one specific topic** per query to improve accuracy and relevance
+- Use specific feature names (e.g., "Microsoft Agent Framework sequential workflow", "Agent Framework function tools", "Agent Framework memory")
+- Call this tool **as often as needed** - multiple searches are encouraged to ensure accurate and up-to-date information
+
+**What to search for**:
+- Microsoft Agent Framework SDK patterns and implementation guidance
+- Azure AI Foundry capabilities, models, and features  
+- Model recommendations and best practices
+- SDK usage examples and code patterns
+
 

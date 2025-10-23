@@ -22,9 +22,10 @@ public class FoundryBestPracticesSetup : IAreaSetup
         // Register Azure Agent Code Generation Best Practices command at the root level
         var azureAgentBestPractices = new CommandGroup(
             Name,
-            @"Returns best practices for building AI agents and applications in Azure. Call this before 
-            generating code for AI agents, building applications with Azure AI Foundry models, or working with 
-            Azure AI resources. Includes guidance on Microsoft Agent Framework, model selection, and implementation patterns. 
+            @"Returns best practices for building AI applications and agents in Azure. Call this before 
+            generating code for any AI application, building with Azure AI Foundry models, working with 
+            Microsoft Agent Framework, or implementing AI solutions in Azure. Includes guidance on Microsoft 
+            Agent Framework, model selection, SDK recommendations, and implementation patterns for all Azure AI scenarios.
             If this tool needs to be categorized, it belongs to the Azure Best Practices category."
         );
 
