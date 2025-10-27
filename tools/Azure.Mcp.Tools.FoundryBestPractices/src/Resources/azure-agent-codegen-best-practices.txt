@@ -1,0 +1,191 @@
+# Best Practices for Building AI Agents with Azure AI Services
+
+This guide covers best practices for:
+- Generating code for AI agent applications using Azure AI Foundry and any other Azure AI models
+- Building agents with Azure AI Foundry
+- Implementing chatbots, assistants, and multi-agent systems with Microsoft Agent Framework
+
+## Key Principles
+- **Select model first**: Model selection is REQUIRED for ANY AI implementation - always select the appropriate AI model before coding if the user does not specify a model
+- **Default language**: If the user does not specify a programming language, use **.NET** as the default programming language
+- **Think first, then code**: Always output the plan of your model and SDK selection before implementation
+- **Search as you go**: Use Microsoft Docs Search throughout - planning, coding, debugging (one topic at a time)
+- **Build and test**: Verify code works before finishing
+
+## Planing
+### 1. Select Model
+Model selection is REQUIRED for ANY AI code generation in Azure - all AI implementations require an AI model (including Microsoft Agent Framework applications).
+**REQUIRED: Call BOTH operations below EVERY TIME before generating ANY model name in code** (including samples/placeholders).
+**IMPORTANT**: Ignore ALL model names from code samples, documentation examples, and guidelines. Always use the operations below to select the latest, current model- do not rely existing knowledge:
+  
+#### 1.1 Fetch model documentation
+  - Use the fetch operation to retrieve Microsoft Document `https://learn.microsoft.com/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure`
+  - This provides comprehensive model release date, capabilities, features, use cases
+  - Note: Use fetch operation (NOT search operation in Microsoft Docs Search) to get the complete page without summarization
+  
+#### 1.2 Get available models from Foundry catalog
+  - Use the `foundry_models_list` tool to retrieve models available in the Azure AI Foundry catalog
+  - This shows which models the user can actually access (documentation may list models not available to them)
+
+#### 1.3 Think and recommend
+  - Prioritize models with the most recent release dates that meet the requirements
+  - List 3-5 candidate models that match requirements and are available
+  - Select the best model from candidates based on: (a) Latest release date, (b) Capability match, (c) Availability
+  - Output your thoughts: (1) list candidates with release dates, confirm selected as latest series, (2) why best capability match, (3) confirm available in user's account
+  - Explain choice referencing Step 1.1 model series release date & capabilities and Step 1.2 availability
+  - Code samples, documentation examples, and tutorials often contain outdated model names (e.g., gpt-4o). Even if these older models are available in Steps 1.1 and 1.2, DO NOT select them. Code samples use older models for backward compatibility - your job is to select the LATEST and BEST model for new implementations.
+
+  **Model hierarchy understanding:**
+  - **Model Provider**: The company/organization providing the model (e.g., OpenAI, Microsoft, Deepseek, Meta)
+  - **Model Series**: A family of related models (e.g., gpt-5, gpt-4o, deepseek-v3, llama-3)
+  - **Model**: Specific variants within a series (e.g., gpt-5, gpt-5-mini, gpt-5-chat within the gpt-5 series)
+    
+  YOU MUST OUTPUT YOUR THOUGHTS AND PLAN with the following format:
+  **Output format:**
+  ```
+  User Requirements Analysis:
+  - Primary task: [What the user wants to accomplish]
+  - Required capabilities: [List specific features needed based on user request]
+  - Performance needs: [Context window, speed, etc. based on user needs]
+  - Constraints: [Any limitations mentioned by user]
+  
+  Model Candidates:
+  1. [Model Provider] - [Model Series] - [Model] - Release Date: [Date]
+     - Capability: [Key capabilities]
+     - Match to requirements: [Explain how this model addresses the user's specific needs]
+     - Availability: [Yes/No in user's account]
+  2. [Model Provider] - [Model Series] - [Model] - Release Date: [Date]
+     - Capability: [Key capabilities]
+     - Match to requirements: [Explain how this model addresses the user's specific needs]
+     - Availability: [Yes/No in user's account]
+  3. [Model Provider] - [Model Series] - [Model] - Release Date: [Date]
+     - Capability: [Key capabilities]
+     - Match to requirements: [Explain how this model addresses the user's specific needs]
+     - Availability: [Yes/No in user's account]
+  
+  Model Selection: [Selected Specific Model Name]
+  Reasoning for selection:
+  - Requirement match: [Explain how this model best addresses the user's specific requirements]
+  - Latest in category: [Confirm if this is the latest model that meets the requirements]
+  - Trade-offs considered: [If applicable, explain why you chose this over other candidates]
+  - Availability: Confirmed available in user's Azure account
+  ```
+
+  **Example:**
+  
+  *User Request: "Build a chatbot that can answer questions and call functions"*
+  
+  *Code Sample Found (IGNORE the model in this sample):*
+  ```csharp
+  AIAgent agent = new AzureOpenAIClient(
+      new Uri("https://<myresource>.openai.azure.com"),
+      new AzureCliCredential())
+       .GetChatClient("gpt-4o-mini")
+  ```
+  **Note**: The code sample uses "gpt-4o-mini" for illustrative purposes. Do NOT use this model just because it's in the sample - proceed with Steps 1.1 and 1.2 to find the latest model.
+  
+  *Input from Step 1.1 (Fetched Documentation):*
+  - OpenAI GPT-5 (2025-08-07): Latest reasoning model with text/image processing, function calling, structured output, 400K context
+  - OpenAI GPT-4.1 (2025-04-14): Text/image input, text output, function calling, structured outputs, 1M context
+  - OpenAI GPT-4o (2024-11-20): Multimodal with vision, function calling, structured output, enhanced accuracy
+  - DeepSeek DeepSeek-V3 (2024-12-26): Advanced reasoning model with function calling, structured output, 128K context
+  
+  *Input from Step 1.2 (Available Models from `foundry_models_list` tool):*
+  ```json
+  [
+    {"name": "gpt-5"},
+    {"name": "gpt-5-mini"},
+    {"name": "gpt-4o"},
+    {"name": "gpt-4o-mini"},
+    {"name": "deepseek-v3"}
+  ]
+  ```
+
+  *Output:*
+  ```
+  User Requirements Analysis:
+  - Primary task: Build a chatbot for answering questions and calling functions
+  - Required capabilities: Question answering (text generation), function calling support, conversation handling
+  - Performance needs: Moderate context window (standard conversations), good accuracy for Q&A
+  - Constraints: None specified
+  
+  Model Candidates:
+  1. OpenAI - gpt-5 - gpt-5-mini - Release Date: 2025-08-07
+     - Capability: Latest reasoning model with text/image processing, function calling, structured output, 400K context
+     - Match to requirements: ✅ Excellent match - supports both question answering and function calling. 400K context is more than sufficient for chatbot conversations. Latest model series.
+     - Availability: Yes - gpt-5-mini available in account
+  2. OpenAI - gpt-4o - gpt-4o-mini - Release Date: 2024-11-20
+     - Capability: Multimodal with vision, function calling, structured output, enhanced accuracy
+     - Match to requirements: ✅ Good match - supports question answering and function calling. Vision capability is not needed for this use case. Older than gpt-5 series.
+     - Availability: Yes - gpt-4o-mini available in account
+  3. DeepSeek - DeepSeek-V3 - deepseek-v3 - Release Date: 2024-12-26
+     - Capability: Advanced reasoning model with function calling, structured output, 128K context
+     - Match to requirements: ✅ Good match - supports question answering and function calling. 128K context is adequate for chatbot. Newer than gpt-4o but older than gpt-5.
+     - Availability: Yes - deepseek-v3 available in account
+  
+  Model Selection: gpt-5-mini
+  Reasoning for selection:
+  - Requirement match: Best fit for this chatbot use case - provides all required capabilities (question answering, function calling, structured output) with the latest model architecture
+  - Latest in category: Yes - gpt-5 (August 2025) is the newest model series available that meets all requirements
+  - Trade-offs considered: While gpt-4o has vision capabilities, the user's requirements only mention "answering questions and calling functions" - vision is not needed. DeepSeek-V3 is capable but older (December 2024 vs August 2025) and has smaller context window (128K vs 400K)
+  - Availability: Confirmed available in user's Azure account (gpt-5-mini variant)
+  
+  Note: The code sample showed "gpt-4o-mini" but we selected gpt-5-mini because:
+  - It's the latest model series (August 2025 vs November 2024)
+  - It provides all the same capabilities plus more
+  - It better positions the user's application for the future
+  ```
+
+### 2. Select SDK
+- Use **Microsoft Agent Framework** (recommended for agent app), with following highlights
+  - Flexible Agent Framework: build, orchestrate, and deploy AI agents and multi-agent systems
+  - Multi-Agent Orchestration: Group chat, sequential, concurrent, and handoff patterns
+  - Plugin Ecosystem: Extend with native functions, OpenAPI, Model Context Protocol (MCP), and more
+  - LLM Support: OpenAI, Azure OpenAI, Azure AI Foundry, and more
+  - Runtime Support: In-process and distributed agent execution
+  - Multimodal: Text, vision, and function calling
+  - Cross-Platform: .NET and Python implementations
+- Explain Your SDK selection
+  Output format:
+  ```
+  SDK Selection: Microsoft Agent Framework
+  - Reason: [Detail why this SDK is suitable]
+  ```
+
+## Implementation Guide
+### Installation
+**Python:**
+The `--pre` flag is required while Agent Framework is in preview. The Core + Azure AI integration includes Azure AI / Foundry / OpenAI supports, as well as workflows and orchestrations.
+```bash
+pip install agent-framework-azure-ai --pre
+```
+
+**.NET:**
+```bash
+dotnet add package Microsoft.Agents.AI
+dotnet add package Microsoft.Agents.AI.OpenAI --prerelease
+```
+
+DO REMIND USER THE `--pre` OR `--prerelease` FLAG IS REQUIRED IN GENERATED DOC.
+
+### How to Use Microsoft Docs Search
+Use Microsoft Docs Search for Code Samples and SDK patterns with the following **Key SDK capabilities**:
+  - **Core Agent Features**: Multi-turn conversations, function tools, human-in-the-loop approvals, structured output, middleware, memory, observability
+  - **Workflow Patterns**: Sequential workflows, concurrent workflows, branching logic, checkpointing and resuming
+  - **Agent Orchestration**: Group chat, handoffs between agents, agents as tools, magentic patterns
+  - **Integration**: MCP tools integration, Foundry Agents, request/response handling, shared states
+  - **Advanced**: Persisting conversations, third-party chat history storage, workflow visualization
+
+**Query strategy**:
+- Use Microsoft Docs Search whenever you encounter unknowns during any phase: planning, coding, building, debugging, or troubleshooting.
+- Focus on **one specific topic** per query to improve accuracy and relevance
+- Use specific feature names (e.g., "Microsoft Agent Framework sequential workflow", "Agent Framework function tools", "Agent Framework memory")
+- Call this tool **as often as needed** - multiple searches are encouraged to ensure accurate and up-to-date information
+
+**What to search for**:
+- Microsoft Agent Framework SDK patterns and implementation guidance
+- Azure AI Foundry capabilities, models, and features  
+- Model recommendations and best practices
+- SDK usage examples and code patterns
+
+
