@@ -1988,7 +1988,7 @@
 | 2 | 0.338439 | `get_azure_resource_and_app_health_status` | ✅ **EXPECTED** |
 | 3 | 0.336768 | `get_azure_storage_details` | ❌ |
 | 4 | 0.325422 | `get_azure_subscriptions_and_resource_groups` | ❌ |
-| 5 | 0.312349 | `get_azure_cache_for_redis_details` | ❌ |
+| 5 | 0.312350 | `get_azure_cache_for_redis_details` | ❌ |
 
 ---
 
