@@ -7,20 +7,20 @@ using Azure.Mcp.Core.Commands;
 using Azure.Mcp.Core.Helpers;
 using Microsoft.Extensions.Logging;
 
-namespace Azure.Mcp.Tools.AzureAgentBestPractices.Commands;
+namespace Azure.Mcp.Tools.AzureAIBestPractices.Commands;
 
-public sealed class AzureAgentBestPracticesGetCommand(ILogger<AzureAgentBestPracticesGetCommand> logger) : BaseCommand<EmptyOptions>
+public sealed class AzureAIBestPracticesGetCommand(ILogger<AzureAIBestPracticesGetCommand> logger) : BaseCommand<EmptyOptions>
 {
-    private const string CommandTitle = "Get Agent Best Practices for Azure";
-    private readonly ILogger<AzureAgentBestPracticesGetCommand> _logger = logger;
+    private const string CommandTitle = "Get AI App Best Practices for Azure";
+    private readonly ILogger<AzureAIBestPracticesGetCommand> _logger = logger;
     private static readonly string s_bestPracticesText = LoadBestPracticesText();
 
     private static string GetBestPracticesText() => s_bestPracticesText;
 
     private static string LoadBestPracticesText()
     {
-        Assembly assembly = typeof(AzureAgentBestPracticesGetCommand).Assembly;
-        string resourceName = EmbeddedResourceHelper.FindEmbeddedResource(assembly, "agent-best-practices-for-azure.txt");
+        Assembly assembly = typeof(AzureAIBestPracticesGetCommand).Assembly;
+        string resourceName = EmbeddedResourceHelper.FindEmbeddedResource(assembly, "ai-best-practices-for-azure.txt");
         return EmbeddedResourceHelper.ReadEmbeddedResource(assembly, resourceName);
     }
 
@@ -29,10 +29,10 @@ public sealed class AzureAgentBestPracticesGetCommand(ILogger<AzureAgentBestPrac
     public override string Name => "get";
 
     public override string Description =>
-        @"Returns best practices for building AI applications, workflows and agents in Azure. Call this before 
-        generating code for any AI application, building with Azure AI Foundry models, working with 
-        Microsoft Agent Framework, or implementing AI solutions in Azure. Includes guidance on Microsoft 
-        Agent Framework, model selection, SDK recommendations, and implementation patterns for all Azure AI scenarios.
+        @"Returns best practices and code generation guidance for building AI applications in Azure. 
+        Use this tool when you need recommendations on how to write code for AI agents, chatbots, workflows, or other AI features.
+        This tool also provides guidance for code generation using the Azure resources (e.g. Azure AI Foundry) for application development only. 
+        For Azure resources (e.g. Azure AI Foundry resource) management operations (e.g., listing/creating/deploying/managing resources like models, agents, deployments, projects, or hubs), use other tools (e.g. 'foundry' tool)  instead.
         If this tool needs to be categorized, it belongs to the Azure Best Practices category.";
 
     public override string Title => CommandTitle;
@@ -55,12 +55,12 @@ public sealed class AzureAgentBestPracticesGetCommand(ILogger<AzureAgentBestPrac
         {
             var bestPractices = GetBestPracticesText();
             context.Response.Status = HttpStatusCode.OK;
-            context.Response.Results = ResponseResult.Create([bestPractices], AzureAgentBestPracticesJsonContext.Default.ListString);
+            context.Response.Results = ResponseResult.Create([bestPractices], AzureAIBestPracticesJsonContext.Default.ListString);
             context.Response.Message = string.Empty;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting agent best practices for Azure");
+            _logger.LogError(ex, "Error getting AI best practices for Azure");
             HandleException(context, ex);
         }
 

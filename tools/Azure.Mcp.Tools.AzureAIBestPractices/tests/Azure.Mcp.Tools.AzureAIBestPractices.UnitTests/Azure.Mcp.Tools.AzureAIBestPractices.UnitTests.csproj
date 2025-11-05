@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\core\Azure.Mcp.Core\tests\Azure.Mcp.Tests\Azure.Mcp.Tests.csproj" />
-    <ProjectReference Include="..\..\src\Azure.Mcp.Tools.AzureAgentBestPractices.csproj" />
+    <ProjectReference Include="..\..\src\Azure.Mcp.Tools.AzureAIBestPractices.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NSubstitute" />

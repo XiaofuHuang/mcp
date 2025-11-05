@@ -63,7 +63,7 @@ internal class Program
 
         return [
             // Register core areas
-            new Azure.Mcp.Tools.AzureAgentBestPractices.AzureAgentBestPracticesSetup(),
+            new Azure.Mcp.Tools.AzureAIBestPractices.AzureAIBestPracticesSetup(),
             new Azure.Mcp.Tools.AzureBestPractices.AzureBestPracticesSetup(),
             new Azure.Mcp.Tools.Extension.ExtensionSetup(),
             new Azure.Mcp.Core.Areas.Group.GroupSetup(),

@@ -430,13 +430,13 @@ This file contains prompts used for end-to-end testing to ensure each tool is in
 | marketplace_product_list | Search for Microsoft products in the marketplace |
 | marketplace_product_list | Show me marketplace products from publisher <publisher_name> |
 
-## Azure Agent Best Practices
+## Azure AI Best Practices
 
 | Tool Name | Test Prompt |
 |:----------|:----------|
-| azureagentbestpractices_get | Get best practices for building AI applications in Azure |
-| azureagentbestpractices_get | Show me best practices for Azure AI Foundry agents |
-| azureagentbestpractices_get | Get guidance for building agents with Azure AI Foundry |
+| azureaibestpractices_get | Get best practices for building AI applications in Azure |
+| azureaibestpractices_get | Show me best practices for Azure AI Foundry agents |
+| azureaibestpractices_get | Get guidance for building agents with Azure AI Foundry |
 
 ## Azure MCP Best Practices
 
