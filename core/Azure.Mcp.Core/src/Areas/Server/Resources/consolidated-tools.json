@@ -488,7 +488,7 @@
         "localRequired": false
       },
       "mappedToolList": [
-        "azureagentbestpractices_get",
+        "azureaibest practices_get",
         "azureterraformbestpractices_get",
         "bicepschema_get",
         "get_bestpractices_get"

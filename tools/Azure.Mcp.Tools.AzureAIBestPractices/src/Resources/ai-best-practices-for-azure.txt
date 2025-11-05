@@ -1,4 +1,4 @@
-# Best Practices for Building AI Agents with Azure AI Services
+# Best Practices for Building AI Apps with Azure AI Services
 
 This guide covers best practices for:
 - Generating code for AI agent applications using Azure AI Foundry and any other Azure AI models

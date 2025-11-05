@@ -65,10 +65,10 @@
 # ServiceLabel: %tools-AppService
 # ServiceOwners:                       @ArthurMa1978 @weidongxu-microsoft 
 
-# PRLabel: %tools-AgentBestPractices
-/tools/Azure.Mcp.Tools.AzureAgentBestPractices/        @XiaofuHuang @microsoft/azure-mcp
+# PRLabel: %tools-AIBestPractices
+/tools/Azure.Mcp.Tools.AzureAIBestPractices/        @XiaofuHuang @microsoft/azure-mcp
 
-# ServiceLabel: %tools-AgentBestPractices
+# ServiceLabel: %tools-AIBestPractices
 # ServiceOwners:                       @XiaofuHuang
 
 # PRLabel: %tools-BestPractices
