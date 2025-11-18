@@ -142,20 +142,29 @@ User Requirements Analysis:
 
 ### 2. Explain SDK selection
 **Recommended SDK:** Microsoft Agent Framework
-**Recommended Agent Type:** Azure AI Foundry Agents with PersistentAgentsClient
+**Recommended Agent Type:** Azure AI Foundry Agents (.Net - `PersistentAgentsClient`; Python - `AzureAIAgentClient`)
 **Default Programming Language:** .NET
 
 ** Agent Type Selection Rules **
-- **ALWAYS use `PersistentAgentsClient` for Azure AI Foundry** 
+**For .NET:**
+- **ALWAYS use `PersistentAgentsClient`** for Azure AI Foundry in .NET
 - **DO NOT use `AzureOpenAIClient`** for Azure AI Foundry models, even for demos, prototypes, or local testing
 - `PersistentAgentsClient` provides service-managed persistence, conversation threads, and full agent capabilities
+
+**For Python:**
+- **ALWAYS use `AzureAIAgentClient`** for Azure AI Foundry in Python
+- **DO NOT use `AzureOpenAIChatClient`** for Azure AI Foundry models, even for demos, prototypes, or local testing
+- `AzureAIAgentClient` provides service-managed persistence, conversation threads, and full agent capabilities
+
+**For both languages:**
 - Only use other agent types (OpenAI ChatCompletion, Azure OpenAI, etc.) if the user **explicitly requests a different service provider**
 
 **Output format:**
 ```
 SDK Selection: Microsoft Agent Framework
 
-Agent Type: Azure AI Foundry Agents (PersistentAgentsClient)
+Agent Type: Azure AI Foundry Agents
+Client: [Specify the client based on the programming language: use `PersistentAgentsClient` for .NET or `AzureAIAgentClient` for Python]
 
 Programming Language: [.NET (default) OR Python (if user specified)]
 
@@ -166,11 +175,11 @@ Searched SDK Related Knowledge:
 - [Key feature name 1]:
   - Documentation: [List documentation URLs/titles matching the target language]
   - Programming Language: [Target language: "CSharp" or "Python"]
-  - How it will be used: [Brief description]
+  - Description: [Brief description, include how it will be used, implementation pattern, related feature, ...]
 - [Key feature name 2]:
   - Documentation: [List documentation URLs/titles matching the target language]
   - Programming Language: [Target language: "CSharp" or "Python"]
-  - How it will be used: [Brief description]
+  - Description: [Brief description, include how it will be used, implementation pattern, related feature, ...]
 - [Additional features as needed...]
 
 Total Searches Performed: [Number]
@@ -178,23 +187,26 @@ Total Searches Performed: [Number]
 
 ### 3. Select and explain model choice
 
-**Selection criteria:**
-- Summarize the latest models from "Step 1: Fetch models catalog documentation"
-- List 3-5 candidate new models matching requirements and availability
-- Select based on: (a) Latest release date, (b) Capability match, (c) Availability from Step 3, (d) The model if user specifies
+**Selection steps:**
+- Analysis which model is used in code sample. Ignore model names in code samples/documents - they use older models for backward compatibility. Always select the LATEST model.
+- Summarize 3-5 latest model series from "Step 1: Fetch models catalog documentation"
+- List 3-5 candidate models from the latest series that match requirements and availability
+- Select based on: (a) Latest release date, (b) Capability match, (c) Availability from Step 3, (d) User-specified model (if provided)
 - **Ignore regional deployment limitations from Step 1 documentation** - if a model appears in Step 3's Foundry catalog, it IS available to the user regardless of regional constraints mentioned in documentation
-- Ignore model names in code samples/documents - they use older models for backward compatibility. Always select the LATEST model.
 
+**IMPORTANT: Output ALL sections below. Do NOT skip any section.**
 **Output format:**
 ```
 Code Sample Model: [code-sample-model-name]
 Note: Code samples show [code-sample-model-name] is old. For backward compatibility, always select the new model for new implementations.
 
+Latest Model Series: [List 3-5 latest model series from Step 1 documentation with release dates]
+
 Model Candidates:
 1. [Model Provider] - [Model Series] - [Model] - [Release Date]
    - Capability: [Key capabilities]
    - Match: [How it addresses needs]
-   - Available: [Yes/No - ONLY check Step 3 Foundry catalog results, ignore Step 1 regional limitations]
+   - Available: [Yes, found in Foundry model list | No, not in Foundry model list - check Step 3 foundry model list results only, ignore Step 1 regional limitations]
 [Repeat for 2-4 more candidates]
 
 Model Selection: [Selected Model]
@@ -206,29 +218,36 @@ Reasoning: [Requirement match, latest in category, trade-offs, availability conf
 Create a step-by-step plan / todo list covering project initialization, installation, setup, core functionality, features, error handling, **build verification, documentation generation, and summary**.
 
 **Code implementation steps must include these final steps:**
-**Build and fix errors** (Required): Run build command (`dotnet build` or equivalent)
-   - If build fails: Analyze build errors → Fix code issues → Rebuild
-   - Repeat fix-rebuild cycle until build succeeds with zero errors
+**Build and Validation** (Required): Verify code correctness
+   - **.NET**: Run `dotnet build` to compile the project
+   - **Python**: Run syntax validation with `python -m py_compile <filename>.py`, and `mypy <filename>.py --ignore-missing-imports` 
+   - If validation fails: Analyze errors → Fix code issues → Re-run validation
+   - Repeat the fix-validation cycle until all checks pass with zero errors
 
 
 ## Code - Implementation Guidelines
-**Note**: Continue using Microsoft Document Search throughout implementation for any unknowns.
+**Note**: 
+- Continue using Microsoft Document Search throughout implementation for any unknowns.
+- Implementation MUST follow the decisions outputed in "Think and Output Your Thoughts".
+  Use the selected SDK, Agent Type and Client, programming language (.NET or Python), model name (from Model Selection), features
+- Reference your analysis output for all implementation decisions - do NOT deviate from documented choices
 
 ### Language-Specific Implementation:
 **IMPORTANT**: Search results may contain documentation and code samples for multiple programming languages (csharp, Python, etc.)
-
-- Only use documentation and code samples that match your target programming language
-- API signatures, syntax, and patterns differ between languages - do not mix language-specific code
-- Ignore code samples and documentation from other programming languages
+- Only use documentation and code samples that match your target programming language specified in "Think and Output Your Thoughts"
 
 ### Installation
 **IMPORTANT**: Always run installation commands (`dotnet add package` or `pip install`) instead of manually editing project files (.csproj, requirements.txt). This ensures proper dependency resolution and project configuration.
 
 #### Python
-The `--pre` flag is required while Agent Framework is in preview. The Core + Azure AI integration includes Azure AI / Foundry / OpenAI supports, as well as workflows and orchestrations.
+The `--pre` flag is required while Agent Framework is in preview. 
+
+**Azure AI Foundry Agent (RECOMMENDED)** - `AzureAIAgentClient`:
 ```bash
 pip install agent-framework-azure-ai --pre
+pip install azure-identity
 ```
+
 DO REMIND USER THE `--pre` OR `--prerelease` FLAG IS REQUIRED IN GENERATED DOC.
 
 #### .NET
@@ -249,29 +268,35 @@ DO REMIND USER THE `--prerelease` FLAG IS REQUIRED IN GENERATED DOC.
 {{ERROR_PATTERNS}}
 
 ## Build and Verification
-**IMPORTANT: Build must succeed before completing the task. This step is REQUIRED and NON-NEGOTIABLE.**
+**IMPORTANT: Code verification must succeed before completing the task. This step is REQUIRED and NON-NEGOTIABLE.**
 
-### Build Requirements
-1. **After implementing ALL code**: Run build command
-2. **If build FAILS** - Enter the fix-rebuild loop (may require MANY iterations):
+### Verification Requirements
+1. **After implementing ALL code**: Run verification for your language
+   - **.NET**: Build with `dotnet build`
+   - **Python**: 
+     Check if Python environment is accessible, then run:
+     - Syntax validation: `python -m py_compile <filename>.py`
+     - Type checking: Install mypy (`pip install mypy`) and use `mypy` to check all the files in this app
+   
+2. **If verification FAILS** - Enter the fix-verify loop (may require MANY iterations):
    - Analyze the error messages carefully
    - Use Microsoft Document Search to find solutions for specific errors
    - Fix code errors by editing files as needed
-   - **Never update plan status when editing files** - file edits are sub-operations within this build-and-fix step
-   - **IMMEDIATELY run build again** after fixing
+   - **Never update plan status when editing files** - file edits are sub-operations within this verification step
+   - **IMMEDIATELY re-run verification** after fixing
    - **Never update plan status or mark anything as complete during this entire loop**
-   - Repeat: fix → rebuild → fix → rebuild until build succeeds
+   - Repeat: fix → verify → fix → verify until verification succeeds
 
-3. **If build SUCCEEDS**:
-   - **NOW you can mark task as complete** - build success is the ONLY trigger for completion
-   - **STOP making any code changes** - build success is the final state
-   - **Do NOT edit code after successful build** - this introduces new errors
+3. **If verification SUCCEEDS**:
+   - **NOW you can mark task as complete** - verification success is the ONLY trigger for completion
+   - **STOP making any code changes** - verification success is the final state
+   - **Do NOT edit code after successful verification** - this introduces new errors
 
 ### Rules
-- ❌ Never skip rebuilding after fixing errors
-- ❌ Never update plan status during the fix-rebuild loop or editing files to fix build errors
-- ❌ Never stop at "I've created a plan" without implementing and building
-- ❌ Never mark task complete until build succeeds
-- ✅ Always rebuild after every fix to verify it works
-- ✅ Expect multiple fix-rebuild iterations - this is normal
-- ✅ Build success is the ONLY acceptable completion state*. Update step status ONLY after successful build
+- ❌ Never skip re-verification after fixing errors
+- ❌ Never update plan status during the fix-verify loop or editing files to fix errors
+- ❌ Never stop at "I've created a plan" without implementing and verifying
+- ❌ Never mark task complete until verification succeeds
+- ✅ Always re-verify after every fix to confirm it works
+- ✅ Expect multiple fix-verify iterations - this is normal
+- ✅ Verification success is the ONLY acceptable completion state. Update step status ONLY after successful verification
